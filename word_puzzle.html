@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Search Puzzle</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+    }
+
+    #wordSearch {
+      display: grid;
+      grid-template-columns: repeat(15, 30px);
+      grid-template-rows: repeat(15, 30px);
+      gap: 1px;
+    }
+
+    .wordCell {
+      width: 30px;
+      height: 30px;
+      text-align: center;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+
+    .highlight {
+      background-color: #ffff66;
+    }
+
+    #wordList {
+      margin-top: 20px;
+    }
+
+    .scratched {
+      text-decoration: line-through;
+    }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+<div id="wordSearch"></div>
+<div id="wordList"></div>
+
+<script>
+  const words = ['apple', 'banana', 'cherry', 'date', 'elderberry', 'fig', 'grape', 'honeydew', 'kiwi', 'lemon', 'mango', 'nectarine', 'orange', 'pear', 'quince'];
+
+  // Function to generate a random word search puzzle
+  function generateWordSearch(words) {
+    const puzzleSize = 15;
+    const puzzle = [];
+
+    // Initialize the puzzle grid
+    for (let i = 0; i < puzzleSize; i++) {
+      puzzle[i] = [];
+      for (let j = 0; j < puzzleSize; j++) {
+        puzzle[i][j] = '';
+      }
+    }
+
+    // Add words to the puzzle
+    words.forEach(word => {
+      let placed = false;
+      while (!placed) {
+        const direction = Math.floor(Math.random() * 8); // 0-7 for eight possible directions
+        const row = Math.floor(Math.random() * puzzleSize);
+        const col = Math.floor(Math.random() * puzzleSize);
+
+        if (canPlaceWord(word, row, col, direction, puzzle)) {
+          placeWord(word, row, col, direction, puzzle);
+          placed = true;
+        }
+      }
+    });
+
+    return puzzle;
+  }
+
+  // Check if a word can be placed at a specific position and direction
+  function canPlaceWord(word, row, col, direction, puzzle) {
+    const len = word.length;
+
+    for (let i = 0; i < len; i++) {
+      const newRow = row + i * (direction === 0 || direction === 3 || direction === 5 ? -1 : direction === 1 || direction === 4 || direction === 7 ? 1 : 0);
+      const newCol = col + i * (direction === 2 || direction === 5 || direction === 7 ? -1 : direction === 0 || direction === 3 || direction === 6 ? 1 : 0);
+
+      if (newRow < 0 || newRow >= puzzle.length || newCol < 0 || newCol >= puzzle[0].length || puzzle[newRow][newCol] !== '') {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  // Place a word at a specific position and direction
+  function placeWord(word, row, col, direction, puzzle) {
+    const len = word.length;
+
+    for (let i = 0; i < len; i++) {
+      puzzle[row][col] = word[i];
+      row += (direction === 0 || direction === 3 || direction === 5 ? -1 : direction === 1 || direction === 4 || direction === 7 ? 1 : 0);
+      col += (direction === 2 || direction === 5 || direction === 7 ? -1 : direction === 0 || direction === 3 || direction === 6 ? 1 : 0);
+    }
+  }
+
+  // Display the puzzle and word list
+  function displayPuzzle(puzzle, words) {
+    const wordSearchContainer = $('#wordSearch');
+    const wordListContainer = $('#wordList');
+
+    // Clear previous content
+    wordSearchContainer.empty();
+    wordListContainer.empty();
+
+    // Display the puzzle
+    for (let i = 0; i < puzzle.length; i++) {
+      for (let j = 0; j < puzzle[i].length; j++) {
+        const cell = $('<div>', { class: 'wordCell', text: puzzle[i][j] });
+        wordSearchContainer.append(cell);
+      }
+    }
+
+    // Display the word list
+    words.forEach(word => {
+      const listItem = $('<div>', { text: word });
+      wordListContainer.append(listItem);
+    });
+
+    // Attach event listener for cell click
+    $('.wordCell').on('click', function () {
+      const cell = $(this);
+      if (!cell.hasClass('highlight')) {
+        const selectedWord = cell.text();
+        highlightWord(selectedWord);
+      }
+    });
+  }
+
+  // Highlight the word in the puzzle and scratch it off the list
+  function highlightWord(word) {
+    const cells = $('.wordCell:contains("' + word + '")');
+
+    if (cells.length > 0) {
+      cells.addClass('highlight');
+      $('.scratched:contains("' + word + '")').addClass('highlight');
+      scratchWord(word);
+    }
+  }
+
+  // Scratch off a word from the list
+  function scratchWord(word) {
+    const listItem = $('#wordList div:contains("' + word + '")');
+    listItem.addClass('scratched');
+  }
+
+  // Initialize the puzzle and display it
+  const puzzle = generateWordSearch(words);
+  displayPuzzle(puzzle, words);
+</script>
+
+</body>
+</html>

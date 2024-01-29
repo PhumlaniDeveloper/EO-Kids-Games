@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f7fc;
+    }
+
+    #dashboard {
+      display: flex;
+    }
+
+    #sidebar {
+      width: 200px;
+      background-color: #3e8cce;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    #buttonsContainer {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dashboard-button {
+      background-color: #66a9d2;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    .dashboard-button:hover {
+      background-color: #4a90c7;
+    }
+
+    #content {
+      flex: 1;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="dashboard">
+  <div id="sidebar">
+    <div id="buttonsContainer">
+      <button class="dashboard-button" onclick="loadGISContent('gis.html')">GIS</button>
+      <button class="dashboard-button" onclick="loadWordPuzzleContent('word_puzzle.html')">Word Puzzle</button>
+      <button class="dashboard-button" onclick="loadContent('South_African_Satelites.html')">SA Satellites</button>
+      <button class="dashboard-button" onclick="loadContent('solar_system.html')">Solar System</button>
+      <button class="dashboard-button" onclick="loadContent('sdgs.html')">SDGs</button>
+      <button class="dashboard-button" onclick="loadContent('remote_sensing_energy.html')">Remote Sensing: Energy</button>
+      <button class="dashboard-button" onclick="loadContent('remote_sensing_agriculture.html')">Remote Sensing: Agriculture</button>
+    </div>
+  </div>
+
+  <div id="content">
+    <!-- Content will be loaded here based on button clicks -->
+    <h1>Welcome to the Dashboard</h1>
+    <p>Select a category from the sidebar.</p>
+  </div>
+</div>
+
+<script>
+   function loadContent(url) {
+    $.ajax({
+      url: url,
+      type: 'GET',
+      dataType: 'html',
+      success: function (data) {
+        $('#content').html(data);
+      },
+      error: function () {
+        $('#content').html('<p>Error loading content.</p>');
+      }
+    });
+  }
+
+  function loadGISContent() {
+    loadContent('gis', 'GIS content goes here.');
+  }
+
+  function loadWordPuzzleContent() {
+    loadContent('word_puzzle.html');
+  }
+
+  function loadSASatellitesContent() {
+    loadContent('SA Satellites', 'SA Satellites content goes here.');
+  }
+
+  function loadSolarSystemContent() {
+    loadContent('Solar System', 'Solar System content goes here.');
+  }
+
+  function loadSDGsContent() {
+    loadContent('SDGs', 'SDGs content goes here.');
+  }
+
+  function loadRemoteSensingEnergyContent() {
+    loadContent('Remote Sensing: Energy', 'Remote Sensing: Energy content goes here.');
+  }
+
+  function loadRemoteSensingAgricultureContent() {
+    loadContent('Remote Sensing: Agriculture', 'Remote Sensing: Agriculture content goes here.');
+  }
+</script>
+
+</body>
+</html>
